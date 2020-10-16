@@ -51,6 +51,9 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
   }
+  .carousel-root {
+    width: 100%;
+  }
   .carousel .slide {
     background: transparent;
   }
