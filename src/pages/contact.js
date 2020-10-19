@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import Layout from "../templates/DefaultLayout"
 import { Formik, useField, Form } from "formik"
@@ -33,7 +33,39 @@ const CustomTextarea = ({ label, ...props }) => {
   )
 }
 
+const CustomSelect = ({ label, values, ...props }) => {
+  const [field, meta] = useField(props)
+
+  return (
+    <>
+      <label htmlFor={props.id || props.name}>{label}</label>
+      <select className="input" {...field} {...props}>
+        <option value="">Choose...</option>
+        {values?.map(value => (
+          <option key={value} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
+      {meta.touched && meta.error ? (
+        <div className="error">{meta.error}</div>
+      ) : null}
+    </>
+  )
+}
+
 const Contact = () => {
+  const [active, setActive] = useState(0)
+  useEffect(() => {
+    document.getElementById("service").addEventListener("click", e => {
+      if (e.target.value === "Other") {
+        setActive(1)
+      } else {
+        setActive(0)
+      }
+      document.getElementById("service").value = e.target.value
+    })
+  }, [])
   return (
     <Container>
       <Layout>
@@ -44,12 +76,15 @@ const Contact = () => {
               name: "",
               email: "",
               message: "",
+              service: "",
+              other: "",
             }}
             validationSchema={Yup.object({
               name: Yup.string().required("Required"),
               email: Yup.string()
                 .email("Invalid email adddress")
                 .required("Required"),
+              service: Yup.string().required("Required"),
               message: Yup.string().required("Required"),
             })}
             onSubmit={async (data, { setSubmitting, resetForm }) => {
@@ -57,6 +92,10 @@ const Contact = () => {
               await addToMailchimp(data.email, {
                 NAME: data.name,
                 MESSAGE: data.message,
+                SERVICE:
+                  data.other !== "" && data.service === "Other"
+                    ? data.other
+                    : data.service,
               })
                 .then(data => {
                   console.log(data)
@@ -83,6 +122,21 @@ const Contact = () => {
                   placeholder="Enter Your Email"
                   type=" email"
                 />
+                <CustomSelect
+                  label=" I'm Interested In"
+                  id="service"
+                  name="service"
+                  values={["Sales", "Technical Support", "Security ", "Other"]}
+                />
+                {active ? (
+                  <CustomInput
+                    label="Other Services"
+                    name="other"
+                    id="other"
+                    type="text"
+                    placeholder="Enter Services"
+                  />
+                ) : null}
                 <CustomTextarea
                   label="Message"
                   is="message"
@@ -124,7 +178,8 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
   }
-  input {
+  input,
+  select {
     height: 50px;
     padding-left: 10px;
     border-radius: 7px;
@@ -133,6 +188,14 @@ const Container = styled.div`
     font-size: 15px;
     font-weight: 500;
     border: 2px solid #f1f1ff;
+  }
+  select {
+    cursor: pointer;
+    outline: none;
+    background: url(${require("../images/arrow.svg")}) no-repeat right;
+    -webkit-appearance: none;
+    background-position-x: 98%;
+    background-color: #fff;
   }
   textarea {
     height: 200px;

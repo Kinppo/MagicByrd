@@ -4,6 +4,13 @@ import styled from "styled-components"
 import Img from "gatsby-image"
 
 const Hero = ({ hero, title, subtitle }) => {
+  const goto = () => {
+    document.querySelector("#first-heading").scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    })
+  }
+
   return (
     <Container>
       <div className="wrp">
@@ -15,6 +22,10 @@ const Hero = ({ hero, title, subtitle }) => {
           </Link>
         </div>
         <Img fluid={hero.childImageSharp.fluid} className="img" />
+      </div>
+      <div className="hero__scroll-indicator" onClick={() => goto()}>
+        <span className="hero__scroll-text">Scroll</span>
+        <span className="icon-chevron-down" id="scrollToNextSection"></span>
       </div>
     </Container>
   )
@@ -30,6 +41,87 @@ const Container = styled.div`
   height: 85vh;
   margin-bottom: 7em;
   padding: 0 10px;
+
+  .hero__scroll-indicator {
+    position: absolute;
+    animation: scrollindicator 2s 3;
+    bottom: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+  @keyframes scrollindicator {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      -webkit-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
+    40% {
+      -webkit-transform: translate(-50%, -1.5rem);
+      transform: translate(-50%, -1.5rem);
+    }
+    60% {
+      -webkit-transform: translate(-50%, -0.75rem);
+      transform: translate(-50%, -0.75rem);
+    }
+  }
+  .hero__scroll-text {
+    display: none;
+    color: #645dff;
+    font-size: 0.8125rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    opacity: 0.7;
+  }
+  .icon-chevron-down {
+    color: #645dff;
+    display: block;
+    font-size: 0.68rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    opacity: 0.9;
+    text-align: center;
+    width: 2.5rem;
+    transition: color 200ms;
+    position: relative;
+  }
+  .icon-chevron-down::before {
+    content: "";
+    border-style: solid;
+    border-width: 0.25em 0.25em 0 0;
+    display: inline-block;
+    height: 0.8em;
+    left: 0em;
+    position: relative;
+    top: 27%;
+    transform: rotate(135deg);
+    vertical-align: top;
+    width: 0.8em;
+  }
+  @media (min-width: 67.5625rem) {
+    .hero__scroll-indicator {
+      display: block;
+      bottom: 2rem;
+      right: 1.5rem;
+      left: auto;
+    }
+    .hero__scroll-indicator .icon-chevron-down {
+      border: 1px solid #645dff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .hero__scroll-text {
+      color: #645dff;
+      display: block;
+      font-size: 0.8125rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+    }
+  }
+
   .wrp {
     max-width: 1400px;
     margin: auto;

@@ -110,7 +110,12 @@ const LatestPosts = ({ data }) => {
               />
             </div>
             <h5>{post.category}</h5>
-            <Link to={post.title.replace(" ", "-").toLowerCase()}>
+            <Link
+              to={post.title
+                .split(" ")
+                .join("-")
+                .toLowerCase()}
+            >
               <h4>{post.title}</h4>
             </Link>
             <hr />

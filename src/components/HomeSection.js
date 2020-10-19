@@ -6,7 +6,9 @@ const HomeSection = ({ data }) => {
   return (
     <Container>
       <div className="wrp">
-        <h1 className="first-heading">{data.nodes[0].heading}</h1>
+        <h1 className="first-heading" id="first-heading">
+          {data.nodes[0].heading}
+        </h1>
         <div className="cards">
           {data.nodes[0].homePageSection.map((item, index) => (
             <div className="card" key={index}>
